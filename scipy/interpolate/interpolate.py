@@ -2504,10 +2504,11 @@ class RegularGridInterpolator(object):
 
         if self.bounds_error:
             for i, p in enumerate(xi.T):
-                if not np.logical_and(np.all(self.grid[i][0] <= p),
-                                      np.all(p <= self.grid[i][-1])):
-                    raise ValueError("One of the requested xi is out of bounds "
-                                     "in dimension %d" % i)
+                bounds = self.grid[i][0, -1]
+                if not np.logical_and(np.all(bounds[0] <= p),
+                                      np.all(p <= bounds[-1])):
+                    raise ValueError("One of the requested xi is outside "
+                                     "bounds %d in dimension %d" % (bounds, i))
 
         indices, norm_distances, out_of_bounds = self._find_indices(xi.T)
         if method == "linear":
